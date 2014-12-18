@@ -1,0 +1,19 @@
+
+[NOTE]
+  [FTP]
+    problem: "RETR response: 550"
+    solution: run 'git --bare update-server-info' at server site
+    note: remote = 'ftp://git:git0105@192.168.1.1/KINGSTON/git/scripts.php.git/'
+  
+  [PHP]
+    problem: "PHP 5.3.x 的 strtotime() 時區設定 警告訊息修正"
+    ref: http://blog.longwin.com.tw/2010/03/php-530-strtotime-timezone-2010/
+    soution:
+      php.ini
+        date.timezone = "Asia/Taipei"
+  
+
+[TODO]
+  Console::read    http://stackoverflow.com/questions/5774344/recieve-user-input-to-run-php-script-with-that-user-input-value-from-keyboard
+  
+  github
