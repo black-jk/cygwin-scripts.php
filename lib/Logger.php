@@ -90,7 +90,13 @@
     
     public function __construct($path) {
       if (!$path) {
-        throw new Exception('Logger path empty');
+        throw new Exception("Logger path empty");
+      } else
+      if (!file_exists($path)) {
+        exec("mkdir -p '{$path}'");
+      } else
+      if (!is_dir($path)) {
+        throw new Exception("Logger path not dir! '{$path}'");
       }
       $this->log_path = $path;
     }
