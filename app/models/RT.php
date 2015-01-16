@@ -376,7 +376,8 @@
         Console::out("[OPERATION] getting movie ..." . ($retry > 1 ? "(retry: {$retry})" : ""), OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "      ", 'eol' => "\n"));
         
         $connections = 8;
-        $cmd = "axel.exe -q -n {$connections} -o '{$movie_path}' '{$movie}'";
+        $_movie_path = preg_replace("/'/", "'\\''", $movie_path);
+        $cmd = "axel.exe -q -n {$connections} -o '{$_movie_path}' '{$movie}'";
         Console::out("[DOWNLOAD] {$cmd}", OUTPUT_STDOUT | OUTPUT_LOG_INFO, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
         $result = system("{$cmd} | awk '{print \"            \" \$0}'");
         
