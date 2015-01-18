@@ -162,6 +162,59 @@
     
     // --------------------------------------------------
     
+    public function category() {
+      // http://www.redtube.com/sandrashinelive?page=1
+      // http://www.redtube.com/pornstar/taylor+vixen
+      
+      $action = ParamsParser::getOption(1);
+      
+      $url = ParamsParser::getOption(2);
+      $url = preg_replace('/\?.*$/', '', $url);
+      
+      $type = preg_replace(array('/^.*com\//', '/\//'), array('', '_'), $url);
+      
+      echo "[url]  {$url}\n";
+      echo "[type] {$type}\n";
+      
+      $ids = array();
+      
+      $page = 1;
+      while (TRUE) {
+        $_url = "{$url}?page={$page}";
+        $html_path = RT_TMP_ROOT . "{$type}.p{$page}.html";
+        $options = array(
+          'retry'      => 2,
+          'cache_path' => $html_path,
+          'cache_time' => /**/ NULL /*/ 1 /**/,
+        );
+        $html = Tool::getHtml($_url, $options);
+        if (!$html) break;
+        
+        $match = preg_match_all('/href="\/(\d+)".*class="video-thumb"/i', $html, $matches);
+        $ids_count = count($matches[1]);
+        if (!$match || $ids_count == 0) {
+          break;
+        }
+        
+        Console::out("[INFO] {$ids_count} ids found!", OUTPUT_STDOUT, array('indent' => 8, 'eol' => "\n"));
+        
+        foreach ($matches[1] as $id) {
+          $ids[] = $id;
+        }
+        
+        $page += 1;
+      }
+      
+      Console::out("", OUTPUT_STDOUT, array('indent' => 2, 'eol' => "\n"));
+      Console::out("--------------------------------------------------", OUTPUT_STDOUT, array('indent' => 2, 'eol' => "\n"));
+      Console::out("[{$action}]", OUTPUT_STDOUT, array('indent' => 2, 'eol' => "\n"));
+      Console::out("--------------------------------------------------", OUTPUT_STDOUT, array('indent' => 2, 'eol' => "\n"));
+      
+      $this->_batchAction($action, $ids);
+    }
+    
+    // --------------------------------------------------
+    
     public function info() {
       $src = $this->getSrc();
       $this->_batchAction('info', $src);
@@ -267,6 +320,8 @@
       "    reset  <number>   \n" .
       "    \n" .
       "    edit   <number>   \n" .
+      "    \n" .
+      "    category <url>    \n" .
       "    \n" .
       "    state [status]\n" .
       "    \n" .
