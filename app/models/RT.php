@@ -267,6 +267,7 @@
     // ----------------------------------------------------------------------------------------------------
     
     public function get() {
+      
       // ------------------------------
       // [Check]
       // ------------------------------
@@ -278,6 +279,9 @@
         return;
       }
       
+      
+      // ------------------------------
+      // [Begin]
       // ------------------------------
       
       $this->setStatus('doing');
@@ -285,54 +289,19 @@
       
       $url = $this->getUrl();
       
-      Console::out("[RT #{$this->id}] [get] [{$url}]", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "    ", 'eol' => "\n"));
+      Console::out("[RT #{$this->id}] [get]", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "    ", 'eol' => "\n"));
       
       
       // ------------------------------
       // [HTML]
       // ------------------------------
       
-      Console::out("clear tmp file", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "      ", 'eol' => "\n"));
-      $cmd = "find " . RT_TMP_ROOT . " -cmin +5 -name '{$this->id}*' -exec rm -v {} \\;";
-      system($cmd);
+      $options = array(
+        'cache_path' => RT_TMP_ROOT . "{$this->id}.html",
+        'cache_time' => 5,
+      );
       
-      $html_path = RT_TMP_ROOT . "{$this->id}.html";
-      
-      $retry = 0;
-      while ($retry++ < 3) {
-        Console::out("[OPERATION] getting html ... " . ($retry > 1 ? "(retry: {$retry})" : ""), OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "\n      ", 'eol' => ""));
-        
-        if (file_exists($html_path)) {
-          Console::out("(cache found!)", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "", 'eol' => "\n"));
-        } else {
-          $cmd = "axel.exe -a -o '{$html_path}' '{$url}'";
-          Console::out("[cmd] {$cmd}", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "\n      ", 'eol' => "\n"));
-          $result = system("{$cmd} | awk '{print \"        \" \$0}'");
-          
-          if ($result === FALSE) {
-            Console::out("[ERROR] execute command fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
-            continue;
-          }
-          
-          if (!file_exists($html_path)) {
-            Console::out("[ERROR] missing html file! '{$html_path}'", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
-            continue;
-          }
-        }
-        
-        $html = file_get_contents($html_path);
-        if (!$html) {
-          Console::out("[ERROR] missing html contents! '{$html_path}'", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
-          if (file_exists($html_path)) {
-            unlink($html_path);
-          }
-          continue;
-        }
-        
-        Console::out("[SUCCESS] get html success!", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "      ", 'eol' => "\n\n"));
-        break;
-      }
-      
+      $html = Tool::getHtml($url, $options);
       if (!$html) {
         $this->setStatus('fail');
         return;
@@ -343,8 +312,7 @@
       // [Parse]
       // ------------------------------
       
-      //title="$(grep '<title' "${html}" | sed 's/^.*<title>//g; s/ *|.*$//g; s/[\?]//g')"
-      $title_match = preg_match('/<title>(.*) \|/', $html, $match);
+      $title_match = preg_match('/<title>(.*) \| Redtube/', $html, $match);
       $title = preg_replace(
         array('/\?/', '/ *\/ */', ),
         array('？',   ' - ',      ),
@@ -371,9 +339,11 @@
       
       $movie_path = RT_INCOMING_ROOT . "{$this->id}_{$title}.flv";
       
-      $retry = 0;
-      while ($retry++ < 3) {
-        Console::out("[OPERATION] getting movie ..." . ($retry > 1 ? "(retry: {$retry})" : ""), OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "      ", 'eol' => "\n"));
+      $retry = 3;
+      
+      $c = 0;
+      while ($c++ < $retry) {
+        Console::out("[OPERATION] getting movie ..." . ($c > 1 ? "(retry: {$c})" : ""), OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('bol' => "      ", 'eol' => "\n"));
         
         $connections = 8;
         $_movie_path = preg_replace("/'/", "'\\''", $movie_path);

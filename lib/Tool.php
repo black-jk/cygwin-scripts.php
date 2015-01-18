@@ -32,6 +32,82 @@
     
     
     // ----------------------------------------------------------------------------------------------------
+    // [Download]
+    // ----------------------------------------------------------------------------------------------------
+    
+    public static function getHtml($url, $options = array()) {
+      Console::out("[OPERATION] getting html '{$url}' ... " . ($c > 1 ? "(retry: {$c})" : ""), OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 6, 'bol' => "\n", 'eol' => "\n"));
+      
+      $cache_path = $options['cache_path']; // cache path of html
+      $cache_time = $options['cache_time']; // cache time (minute)
+      
+      if ($cache_path) {
+        $html_path = $cache_path;
+      } else {
+        $html_path = TMP_ROOT . "tool.get_html_tmp.html";
+      }
+      
+      if (!is_numeric($cache_time)) {
+        $cache_time = 30;
+      }
+      
+      if (file_exists($cache_path)) {
+        Console::out("(clear tmp file ...)", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'eol' => "\n"));
+        $cmd = "find {$cache_path} -cmin +{$cache_time} -exec rm -v {} \\;";
+        system("{$cmd} | awk '{print \"        \" \$0}'");
+      }
+      
+      // ------------------------------
+      
+      $retry = $options['retry'];
+      if (!is_numeric($retry)) {
+        $retry = 3;
+      }
+      
+      $c = 0;
+      while ($c++ < $retry) {
+        if (file_exists($html_path)) {
+          Console::out("(cache found!)", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'eol' => "\n"));
+        } else {
+          
+          if (file_exists($html_path)) {
+            unlink($html_path);
+          }
+          
+          $cmd = "axel.exe -n 1 -q -o '{$html_path}' '{$url}'";
+          Console::out("[cmd] {$cmd}", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
+          $result = system("{$cmd} | awk '{print \"        \" \$0}'");
+          
+          if ($result === FALSE) {
+            Console::out("[ERROR] execute command fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
+            continue;
+          }
+          
+          if (!file_exists($html_path)) {
+            Console::out("[ERROR] missing html file! '{$html_path}'", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
+            continue;
+          }
+        }
+        
+        $html = file_get_contents($html_path);
+        if (!$html) {
+          Console::out("[ERROR] missing html contents! '{$html_path}'", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
+          if (file_exists($html_path)) {
+            unlink($html_path);
+          }
+          continue;
+        }
+        
+        Console::out("[SUCCESS] get html success!", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
+        break;
+      }
+      
+      return $html;
+    }
+    
+    
+    
+    // ----------------------------------------------------------------------------------------------------
     // [Console]
     // ----------------------------------------------------------------------------------------------------
     
