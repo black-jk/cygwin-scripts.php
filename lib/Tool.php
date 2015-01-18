@@ -45,6 +45,9 @@
         $html_path = $cache_path;
       } else {
         $html_path = TMP_ROOT . "tool.get_html_tmp.html";
+        if (file_exists($html_path)) {
+          unlink($html_path);
+        }
       }
       
       if (!is_numeric($cache_time)) {
@@ -67,7 +70,7 @@
       $c = 0;
       while ($c++ < $retry) {
         if (file_exists($html_path)) {
-          Console::out("(cache found!)", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'eol' => "\n"));
+          Console::out("(cache found! {$html_path})", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'eol' => "\n"));
         } else {
           
           if (file_exists($html_path)) {

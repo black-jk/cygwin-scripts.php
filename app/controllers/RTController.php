@@ -92,6 +92,10 @@
             }
             break;
             
+          case 'preview':
+            $rt->preview();
+            break;
+            
           case 'info':
             if ($is_new) {
               Console::out("[NEW]", OUTPUT_STDOUT, array('indent' => 4, 'eol' => "\n"));
@@ -158,6 +162,13 @@
     public function edit() {
       $src = $this->getSrc();
       $this->_batchAction('edit', $src);
+    }
+    
+    // --------------------------------------------------
+    
+    public function preview() {
+      $src = $this->getSrc();
+      $this->_batchAction('preview', $src);
     }
     
     // --------------------------------------------------
@@ -311,15 +322,17 @@
       "    \n" .
       "    help\n" .
       "    \n" .
-      "    info   <number>   \n" .
-      "    update <number>   \n" .
-      "    add    <number>   \n" .
-      "    retry  <number>   \n" .
-      "    bad    <number>   \n" .
-      "    repeat <number>   \n" .
-      "    reset  <number>   \n" .
+      "    info    <number>   \n" .
+      "    update  <number>   \n" .
+      "    add     <number>   \n" .
+      "    retry   <number>   \n" .
+      "    bad     <number>   \n" .
+      "    repeat  <number>   \n" .
+      "    reset   <number>   \n" .
       "    \n" .
-      "    edit   <number>   \n" .
+      "    edit    <number>   \n" .
+      "    \n" .
+      "    preview <number>   \n" .
       "    \n" .
       "    category <url>    \n" .
       "    \n" .

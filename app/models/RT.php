@@ -317,6 +317,7 @@
         array('/\?/', '/ *\/ */', ),
         array('？',   ' - ',      ),
         $match[1]);
+      $title = trim($title);
       if (!$title_match || !$title) {
         Console::out("[html] get title fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
         $this->setStatus('fail');
@@ -427,6 +428,56 @@
     public function editLog() {
       $this->log = Tool::editText($this->log);
       $this->save();
+    }
+    
+    
+    
+    // ----------------------------------------------------------------------------------------------------
+    
+    public function preview() {
+      $url = $this->getUrl();
+      
+      $options = array(
+        'cache_path' => RT_TMP_ROOT . "{$this->id}.html",
+        'cache_time' => 5,
+      );
+      
+      $html = Tool::getHtml($url, $options);
+      if (!$html) {
+        $this->setStatus('fail');
+        return;
+      }
+      
+      
+      // ------------------------------
+      // [Parse]
+      // ------------------------------
+      
+      // [TODO] ...
+      $title_match = preg_match('/<title>(.*) \| Redtube/', $html, $match);
+      $title = preg_replace(
+        array('/\?/', '/ *\/ */', ),
+        array('？',   ' - ',      ),
+        $match[1]);
+      $title = trim($title);
+      if (!$title_match || !$title) {
+        Console::out("[html] get title fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+        return;
+      }
+      
+      $movie_match = preg_match('/<source .*src="([^"]*)"/m', $html, $match);
+      $movie = $match[1];
+      if (!$movie_match || !$movie) {
+        Console::out("[html] get movie fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+        return;
+      }
+      
+      $filename = "{$this->id}_{$title}.flv";
+      
+      Console::out("", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+      Console::out("[title]    {$title}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+      Console::out("[filename] {$filename}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+      Console::out("[source]   {$movie}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
     }
     
     
