@@ -455,7 +455,8 @@
     // --------------------------------------------------
     
     public function editLog() {
-      // [TODO]
+      $this->log = Tool::editText($this->log);
+      $this->save();
     }
     
     

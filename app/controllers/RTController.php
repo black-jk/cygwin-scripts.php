@@ -86,6 +86,12 @@
             }
             break;
             
+          case 'edit':
+            if (!$is_new) {
+              $rt->editLog();
+            }
+            break;
+            
           case 'info':
             if ($is_new) {
               Console::out("[NEW]", OUTPUT_STDOUT, array('indent' => 4, 'eol' => "\n"));
@@ -145,6 +151,13 @@
     public function reset() {
       $src = $this->getSrc();
       $this->_batchAction('reset', $src);
+    }
+    
+    // --------------------------------------------------
+    
+    public function edit() {
+      $src = $this->getSrc();
+      $this->_batchAction('edit', $src);
     }
     
     // --------------------------------------------------
@@ -252,6 +265,8 @@
       "    bad    <number>   \n" .
       "    repeat <number>   \n" .
       "    reset  <number>   \n" .
+      "    \n" .
+      "    edit   <number>   \n" .
       "    \n" .
       "    state [status]\n" .
       "    \n" .
