@@ -77,7 +77,8 @@
             unlink($html_path);
           }
           
-          $cmd = "axel.exe -n 1 -q -o '{$html_path}' '{$url}'";
+          $useg_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
+          $cmd = "axel.exe -q -n 1 -U '$useg_agent' -o '{$html_path}' '{$url}'";
           Console::out("[cmd] {$cmd}", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
           $result = system("{$cmd} | awk '{print \"        \" \$0}'");
           
