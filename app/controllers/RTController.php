@@ -21,6 +21,8 @@
     function __construct() {
       parent::__construct();
       
+      RT::clearTMP();
+      
       $this->dry_run = ParamsParser::getParam('n', FALSE);
       $this->verbose = ParamsParser::getParam('v', FALSE);
       $this->update  = ParamsParser::getParam('u', FALSE);
