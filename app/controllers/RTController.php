@@ -201,7 +201,10 @@
           'cache_time' => /**/ NULL /*/ 1 /**/,
         );
         $html = Tool::getHtml($_url, $options);
-        if (!$html) break;
+        if (!$html) {
+          $page += 1;
+          continue;
+        }
         
         $match = preg_match_all('/href="\/(\d+)".*class="video-thumb"/i', $html, $matches);
         $ids_count = count($matches[1]);
@@ -213,6 +216,12 @@
         
         foreach ($matches[1] as $id) {
           $ids[] = $id;
+        }
+        
+        $match_end = preg_match_all('/( class="navigate notActiveNextLink"| id="navNext"){2}/i', $html);
+        if ($match_end) {
+          Console::out("[END]", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "\n", 'eol' => "\n"));
+          break;
         }
         
         $page += 1;
