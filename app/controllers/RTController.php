@@ -199,7 +199,11 @@
       
       $page = 1;
       while (TRUE) {
-        $_url = "{$url}?page={$page}";
+        if ($page < 2) {
+          $_url = "{$url}";
+        } else {
+          $_url = "{$url}?page={$page}";
+        }
         $html_path = RT_TMP_ROOT . "{$type}.p{$page}.html";
         $options = array(
           'retry'      => 2,
