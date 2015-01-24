@@ -198,7 +198,7 @@
               Console::out("[RT #{$this->id}] [setStatus({$status})] [SKIP] '{$this->status}'", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
               return;
             }
-            if (in_array($this->status, array('success'))) {
+            if (in_array($this->status, array('success', 'doing'))) {
               Console::out("[RT #{$this->id}] [setStatus({$status})] [SKIP] '{$this->status}'", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
               return;
             }
