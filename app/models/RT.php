@@ -190,25 +190,25 @@
     public function setStatus($status) {
       $origin_status = $this->status;
       
+      // status: new todo doing success fail bad repeat private
       switch ($status) {
         case 'todo':
-        case 'retry':
-          if ($status == 'todo') {
-            if (in_array($this->status, array('repeat', 'bad'))) {
-              Console::out("[RT #{$this->id}] [setStatus({$status})] [SKIP] '{$this->status}'", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
-              return;
-            }
-            if (in_array($this->status, array('success', 'doing'))) {
-              Console::out("[RT #{$this->id}] [setStatus({$status})] [SKIP] '{$this->status}'", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
-              return;
-            }
-          } else
-          if ($status == 'retry') {
-            $this->remove();
+          if (in_array($this->status, array('repeat', 'bad'))) {
+            Console::out("[RT #{$this->id}] [setStatus({$status})] [SKIP] '{$this->status}'", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
+            return;
+          }
+          if (in_array($this->status, array('success', 'doing'))) {
+            Console::out("[RT #{$this->id}] [setStatus({$status})] [SKIP] '{$this->status}'", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
+            return;
           }
           $this->status = 'todo';
           break;
-        
+          
+        case 'retry':
+          $this->remove();
+          $this->status = 'todo';
+          break;
+          
         case 'doing':
           $this->status = $status;
           break;
@@ -228,6 +228,7 @@
           
         case 'bad':
         case 'repeat':
+        case 'private':
           $this->remove();
           $this->status = $status;
           break;
