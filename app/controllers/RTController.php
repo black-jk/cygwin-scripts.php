@@ -76,9 +76,10 @@
             $rt->setStatus('todo');
             break;
             
+          case 'bad':
           case 'retry':
           case 'repeat':
-          case 'bad':
+          case 'private':
             $rt->setStatus($action);
             break;
             
@@ -152,6 +153,11 @@
     public function repeat() {
       $src = $this->getSrc();
       $this->_batchAction('repeat', $src);
+    }
+    
+    public function privat() {
+      $src = $this->getSrc();
+      $this->_batchAction('private', $src);
     }
     
     public function reset() {
@@ -283,7 +289,7 @@
     
     public function loop() {
       $action = ParamsParser::getOption(1);
-      if (!in_array($action, array('info', 'update', 'add', 'retry', 'bad', 'repeat', 'reset'))) {
+      if (!in_array($action, array('info', 'update', 'add', 'retry', 'bad', 'repeat', 'private', 'reset'))) {
         $this->help();
         return;
       }
@@ -339,6 +345,7 @@
       "    retry   <number>   \n" .
       "    bad     <number>   \n" .
       "    repeat  <number>   \n" .
+      "    privat  <number>   \n" .
       "    reset   <number>   \n" .
       "    \n" .
       "    edit    <number>   \n" .
