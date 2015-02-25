@@ -33,7 +33,21 @@ _fop()
   
   case ${act} in
     
-    show|hide|info)
+    show|hide)
+      
+      case ${cur} in
+        -*)
+          COMPREPLY=( $( compgen -W "-n -v -dirs" -- "$cur" ) )
+        ;;
+        
+        *)
+          COMPREPLY=( $( compgen -d -- "$cur" ) )
+        ;;
+      esac
+      return 0
+    ;;
+    
+    info)
       COMPREPLY=( $( compgen -d -- "$cur" ) )
       return 0
     ;;
