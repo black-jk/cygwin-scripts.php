@@ -1,0 +1,56 @@
+# bash completion for file-operation.php
+# alias: fop
+
+### http://hialan2010.blogspot.tw/2013/12/bash-autocomplete.html
+
+_fop()
+{
+  local cur prev xspec #helpopts
+  
+  COMPREPLY=()
+  _get_comp_words_by_ref cur prev
+  #helpopts=`_parse_help ${COMP_WORDS[0]}`
+  
+  cmd=${COMP_WORDS[0]}
+	act=${COMP_WORDS[1]}
+	
+  #echo ""
+  #echo "  cur:      ${cur}"
+  #echo "  prev:     ${prev}"
+  #echo "  xspec:    ${xspec}"
+  #echo "  helpopts: ${helpopts}"
+  #echo ""
+  
+  case ${prev} in
+    
+    fop)
+      COMPREPLY=( $( compgen -W "show hide info help" -- "$cur" ) )
+      return 0
+    ;;
+    
+  esac
+  
+  
+  case ${act} in
+    
+    show|hide|info)
+      COMPREPLY=( $( compgen -d -- "$cur" ) )
+      return 0
+    ;;
+    
+    *)
+      return 0
+    ;;
+    
+  esac
+  
+} &&
+complete -F _fop fop
+
+# Local variables:
+# mode: shell-script
+# sh-basic-offset: 4
+# sh-indent-comment: t
+# indent-tabs-mode: nil
+# End:
+# ex: ts=4 sw=4 et filetype=sh

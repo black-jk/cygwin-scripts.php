@@ -1,0 +1,50 @@
+# bash completion for rt-operation.php
+# alias: rop
+
+_rop()
+{
+  local cur prev xspec helpopts
+  
+  COMPREPLY=()
+  _get_comp_words_by_ref cur prev
+  
+  #echo ""
+  #echo "  cur:      ${cur}"
+  #echo "  prev:     ${prev}"
+  #echo "  xspec:    ${xspec}"
+  #echo ""
+  
+  case ${prev} in
+    
+    rop)
+      COMPREPLY=( $( compgen -W "help info update add retry bad repeat privat reset edit preview category state run" -- "$cur" ) )
+    ;;
+    
+    help)
+      return 0
+    ;;
+      
+    info|update|add|retry|bad|repeat|privat|reset|edit|preview|category|run)
+      return 0
+    ;;
+    
+    state)
+      COMPREPLY=( $( compgen -W "todo doing success fail bad repeat private" -- "$cur" ) )
+    ;;
+    
+    *)
+      return 0
+    ;;
+    
+  esac
+  
+} &&
+complete -F _rop rop
+
+# Local variables:
+# mode: shell-script
+# sh-basic-offset: 4
+# sh-indent-comment: t
+# indent-tabs-mode: nil
+# End:
+# ex: ts=4 sw=4 et filetype=sh
