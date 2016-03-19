@@ -357,7 +357,8 @@
         $connections = 8;
         $_movie_path = preg_replace("/'/", "'\\''", $movie_path);
         $useg_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
-        $cmd = "axel.exe -q -n {$connections} -U '$useg_agent' -o '{$_movie_path}' '{$movie}'";
+        //$cmd = "axel.exe -q -n {$connections} -U '$useg_agent' -o '{$_movie_path}' '{$movie}'";
+        $cmd = "wget --progress=bar -U '$useg_agent' -O '{$_movie_path}' '{$movie}'";
         Console::out("[DOWNLOAD] {$cmd}", OUTPUT_STDOUT | OUTPUT_LOG_INFO, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
         $result = system("{$cmd} | awk '{print \"            \" \$0}'");
         
