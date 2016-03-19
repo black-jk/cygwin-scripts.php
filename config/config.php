@@ -6,9 +6,13 @@
   
   define('ROOT', __DIR__ . "/../");
   define('CONFIG_ROOT', __DIR__);
+  define('APP_DATA_ROOT',   '/cygdrive/d/App/AppData/cygwin-scripts.php-logs/');
   
   define('TMP_ROOT',        ROOT . "tmp/");
-  define('LOG_ROOT',        ROOT . "logs/");
+  
+  //define('LOG_ROOT',        ROOT . "logs/");
+  define('LOG_ROOT',        APP_DATA_ROOT . "logs/");
+  
   define('STORAGE_ROOT',    TMP_ROOT . "storage/");
   
   define('LIB_ROOT',        ROOT . "lib/");
