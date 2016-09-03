@@ -121,6 +121,8 @@
     public $status = 'new';
     public $file_status = -1; // -1: unknow  0: not exist  1: exist  2: repeat
     
+    public $file_type = "mp4"; // flv
+    
     public $log = '';
     public $created_at;
     
@@ -346,7 +348,7 @@
       // [Download]
       // ------------------------------
       
-      $movie_path = RT_INCOMING_ROOT . "{$this->id}_{$title}.flv";
+      $movie_path = RT_INCOMING_ROOT . "{$this->id}_{$title}.{$this->file_type}";
       
       $retry = 3;
       
@@ -368,7 +370,7 @@
         }
         
         if (!file_exists($movie_path)) {
-          Console::out("[ERROR] missing flv file! '{$movie_path}'", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
+          Console::out("[ERROR] missing {$this->file_type} file! '{$movie_path}'", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
           continue;
         }
         
@@ -418,7 +420,7 @@
     public function findFiles() {
       $files = array();
       
-      $cmd = "find " . RT_ROOT . " -name '{$this->id}_*.flv'";
+      $cmd = "find " . RT_ROOT . " -name '{$this->id}_*.{$this->file_type}'";
       exec($cmd, $files);
       
       return $files;
@@ -482,7 +484,7 @@
         return;
       }
       
-      $filename = "{$this->id}_{$title}.flv";
+      $filename = "{$this->id}_{$title}.{$this->file_type}";
       
       Console::out("", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
       Console::out("[title]    {$title}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
