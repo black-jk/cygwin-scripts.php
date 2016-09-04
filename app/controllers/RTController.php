@@ -354,7 +354,11 @@
     
     public function help() {
       $msg =
-      "[Usage] ./rt-operation.php [loop] <action>\n" .
+      "[Usage] ./rt-operation.php [loop] <action>  [-v] [-n] [-u]\n" .
+      "\n" .
+      "  -v  verbose          \n" .
+      "  -n  dry run          \n" .
+      "  -u  update           \n" .
       "\n" .
       "  action:\n" .
       "    \n" .
@@ -373,7 +377,11 @@
       "    \n" .
       "    preview <number>   \n" .
       "    \n" .
-      "    category <action> <url> [--limit <number>]\n" .
+      "    category <action> <url> [--limit <number>]  \n" .
+      "      url:                                      \n" .
+      "        http://.../xxx                          \n" .
+      "        http://.../xxx/myvideos                 \n" .
+      "        http://.../?search=xxx                  \n" .
       "    \n" .
       "    state [status]\n" .
       "    \n" .
