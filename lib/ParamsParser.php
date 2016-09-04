@@ -28,7 +28,7 @@
 //echo "param: \$argv[{$i}] = '{$param}'\n";
         if (preg_match('/^--[0-9a-zA-Z]/', $param)) {
           $key = preg_replace('/^--/', '', $param);
-          $val = $argv[$begin_index + $i];
+          $val = $argv[$begin_index + $i + 1];
           self::$params[$key] = $val;
 //echo "> params[{$key}] = {$val}\n";
           $i += 2;
