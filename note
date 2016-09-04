@@ -12,6 +12,9 @@
       php.ini
         date.timezone = "Asia/Taipei"
   
+  [Axel]
+    downlad and install
+    http://pkgs.fedoraproject.org/repo/pkgs/axel/axel-2.4.tar.gz/a2a762fce0c96781965c8f9786a3d09d/
 
 [TODO]
   Console::read    http://stackoverflow.com/questions/5774344/recieve-user-input-to-run-php-script-with-that-user-input-value-from-keyboard
