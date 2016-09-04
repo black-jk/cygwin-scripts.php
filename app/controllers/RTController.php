@@ -190,6 +190,8 @@
       
       $url = ParamsParser::getOption(2);
       
+      $limit = ParamsParser::getParam('limit', 0);
+      
       if (preg_match('/\?search=/', $url)) {
         $glue = "&";
         $tmp_filename = preg_replace(array('/^.*com\/?\?search=/'), array('search-'), $url);
@@ -242,6 +244,10 @@
         $match_end = preg_match_all('/( class="navigate notActiveNextLink"| id="navNext"){2}/i', $html);
         if ($match_end) {
           Console::out("[END]", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "\n", 'eol' => "\n"));
+          break;
+        }
+        
+        if ($limit > 0 && $page >= $limit) {
           break;
         }
         
@@ -367,7 +373,7 @@
       "    \n" .
       "    preview <number>   \n" .
       "    \n" .
-      "    category <action> <url>\n" .
+      "    category <action> <url> [--limit <number>]\n" .
       "    \n" .
       "    state [status]\n" .
       "    \n" .
