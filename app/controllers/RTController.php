@@ -182,18 +182,29 @@
     // --------------------------------------------------
     
     public function category() {
+      // http://www.redtube.com/?search=givemepink
       // http://www.redtube.com/sandrashinelive?page=1
       // http://www.redtube.com/pornstar/taylor+vixen
       
       $action = ParamsParser::getOption(1);
       
       $url = ParamsParser::getOption(2);
-      $url = preg_replace('/\?.*$/', '', $url);
       
-      $type = preg_replace(array('/^.*com\//', '/\//'), array('', '_'), $url);
+      if (preg_match('/\?search=/', $url)) {
+        $glue = "&";
+        $tmp_filename = preg_replace(array('/^.*com\/?\?search=/'), array('search-'), $url);
+      } else {
+        $glue = "?";
+        $url = preg_replace('/\?.*$/', '', $url);
+        $tmp_filename = preg_replace(array('/^.*com\//', '/\//'), array('', '-'), $url);
+      }
       
-      echo "[url]  {$url}\n";
-      echo "[type] {$type}\n";
+      echo "[action] {$action}\n";
+      echo "\n";
+      echo "[url] {$url}\n";
+      echo "  [tmp_filename] {$tmp_filename}\n";
+      echo "\n";
+      echo "--------------------------------------------------\n";
       
       $ids = array();
       
@@ -202,9 +213,9 @@
         if ($page < 2) {
           $_url = "{$url}";
         } else {
-          $_url = "{$url}?page={$page}";
+          $_url = "{$url}{$glue}page={$page}";
         }
-        $html_path = RT_TMP_ROOT . "{$type}.p{$page}.html";
+        $html_path = RT_TMP_ROOT . "{$tmp_filename}.p{$page}.html";
         $options = array(
           'retry'      => 2,
           'cache_path' => $html_path,
@@ -356,7 +367,7 @@
       "    \n" .
       "    preview <number>   \n" .
       "    \n" .
-      "    category <url>    \n" .
+      "    category <action> <url>\n" .
       "    \n" .
       "    state [status]\n" .
       "    \n" .
