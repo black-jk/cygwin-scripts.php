@@ -211,6 +211,7 @@
       $ids = array();
       
       $page = 1;
+      $missing_html_count = 0;
       while (TRUE) {
         if ($page < 2) {
           $_url = "{$url}";
@@ -223,11 +224,19 @@
           'cache_path' => $html_path,
           'cache_time' => /**/ NULL /*/ 1 /**/,
         );
+        
         $html = Tool::getHtml($_url, $options);
         if (!$html) {
+          $missing_html_count += 1;
+          if ($missing_html_count >= 3) {
+            Console::out("[ERROR] Missing html x {$missing_html_count}", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 4, 'eol' => "\n"));
+            break;
+          }
+          
           $page += 1;
           continue;
         }
+        $missing_html_count = 0;
         
         $match = preg_match_all('/href="\/(\d+)".*class="video-thumb"/i', $html, $matches);
         $ids_count = count($matches[1]);
