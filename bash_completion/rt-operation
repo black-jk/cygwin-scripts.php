@@ -23,9 +23,13 @@ _rop()
     help)
       return 0
     ;;
-      
-    info|update|add|retry|bad|repeat|privat|reset|edit|preview|category|run)
+    
+    info|update|add|retry|bad|repeat|privat|reset|edit|preview|run)
       return 0
+    ;;
+    
+    category)
+    	COMPREPLY=( $( compgen -W "info update add retry preview" -- "$cur" ) )
     ;;
     
     state)
