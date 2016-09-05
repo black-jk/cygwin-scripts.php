@@ -17,14 +17,18 @@ _rop()
   case ${prev} in
     
     rop)
-      COMPREPLY=( $( compgen -W "help info update add retry bad repeat privat reset edit preview category state run" -- "$cur" ) )
+      COMPREPLY=( $( compgen -W "help info update add retry bad repeat privat reset edit preview category state run --limit" -- "$cur" ) )
+    ;;
+    
+    run)
+      COMPREPLY=( $( compgen -W "--limit" -- "$cur" ) )
     ;;
     
     help)
       return 0
     ;;
     
-    info|update|add|retry|bad|repeat|privat|reset|edit|preview|run)
+    info|update|add|retry|bad|repeat|privat|reset|edit|preview)
       return 0
     ;;
     

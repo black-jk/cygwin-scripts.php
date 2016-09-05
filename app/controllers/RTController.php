@@ -335,12 +335,17 @@
     // --------------------------------------------------
     
     public function run() {
+      $limit = ParamsParser::getParam('limit', 0);
       $break_when_done = !ParamsParser::getParam('t', FALSE);
       
+      $count = 0;
       while (TRUE) {
         $rt = RT::findByConds(array('status' => 'todo'));
         if ($rt) {
           $rt->exec();
+          if ($limit > 0 && ++$count >= $limit) {
+            break;
+          }
           continue;
         }
         if ($break_when_done) {
@@ -394,7 +399,7 @@
       "    \n" .
       "    state [status]\n" .
       "    \n" .
-      "    run       \n" .
+      "    run [--limit <number>] \n" .
       "";
       Console::out(Tool::indent($msg, 2), OUTPUT_STDOUT, array('eol' => "\n"));
     }
