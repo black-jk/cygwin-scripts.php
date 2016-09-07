@@ -486,8 +486,22 @@
       
       $filename = "{$this->id}_{$title}.{$this->file_type}";
       
+      $thumb_match = preg_match('/poster="(http.*.jpg)"/m', $html, $match);
+      $thumb = $match[1];
+      if (!$thumb_match || !$thumb) {
+        Console::out("[html] get thumb fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+        return;
+      }
+      
+      $options = array(
+        'tmp_path' => RT_TMP_ROOT . "thumb_{$this->id}.jpg",
+      );
+      $dest = RT_TMP_ROOT . "thumbs/{$this->id}.jpg";
+      Tool::getFile($thumb, $dest, $options);
+      
       Console::out("", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
       Console::out("[title]    {$title}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+      Console::out("[thumb]    {$thumb}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
       Console::out("[filename] {$filename}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
       Console::out("[source]   {$movie}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
     }
