@@ -21,8 +21,6 @@
     function __construct() {
       parent::__construct();
       
-      RT::clearTMP();
-      
       $this->dry_run = ParamsParser::getParam('n', FALSE);
       $this->verbose = ParamsParser::getParam('v', FALSE);
       $this->update  = ParamsParser::getParam('u', FALSE);
@@ -43,6 +41,8 @@
     // ----------------------------------------------------------------------------------------------------
     
     protected function _batchAction($action, $src) {
+      RT::clearTMP();
+      
       if (is_array($src)) {
         $lines = $src;
       } else if (is_string($src)) {
@@ -128,6 +128,7 @@
     // ----------------------------------------------------------------------------------------------------
     
     public function main() {
+      RT::clearTMP();
       $this->run();
     }
     
