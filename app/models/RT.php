@@ -88,7 +88,9 @@
     // ----------------------------------------------------------------------------------------------------
     
     public static function clearTMP() {
+      Console::out("[RT::clearTMP()] running...", OUTPUT_STDOUT, array('bol' => "  ", 'eol' => ""));
       $cmd = "find " . RT_TMP_ROOT . " -name '*.html' -cmin +1440 -exec rm {} \;";
+      Console::out(" done", OUTPUT_STDOUT, array('bol' => "", 'eol' => "\n\n"));
       exec($cmd);
     }
     
