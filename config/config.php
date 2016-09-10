@@ -10,8 +10,8 @@
   
   define('TMP_ROOT',        ROOT . "tmp/");
   
-  //define('LOG_ROOT',        ROOT . "logs/");
-  define('LOG_ROOT',        APP_DATA_ROOT . "logs/");
+  define('LOG_ROOT',        ROOT . "logs/");
+  //define('LOG_ROOT',        APP_DATA_ROOT . "logs/");
   
   define('STORAGE_ROOT',    TMP_ROOT . "storage/");
   
