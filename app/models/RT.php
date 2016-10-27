@@ -201,8 +201,8 @@
       $title = htmlspecialchars_decode(trim($title));
       
       $title = preg_replace(
-        array("/&/",   ),
-        array("[AND]", ),
+        array("/&/",   "/[\\/:*?\"<>|]/"),
+        array("[AND]", "_"),
         $title);
       
       return $title;
