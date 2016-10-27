@@ -488,8 +488,9 @@
       
       $filename = "{$this->id}_{$title}.{$this->file_type}";
       
-      $thumb_match = preg_match('/poster="(http.*.jpg)"/m', $html, $match);
-      $thumb = $match[1];
+      // thumb
+      $thumb_match = preg_match('/poster="(\/\/.*.jpg)"/m', $html, $match);
+      $thumb = preg_replace("/(https?:)?\/\//", "http://", $match[1]);
       if (!$thumb_match || !$thumb) {
         Console::out("[html] get thumb fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
         return;
