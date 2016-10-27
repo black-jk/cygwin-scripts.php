@@ -187,6 +187,27 @@
     
     
     
+    // ----------------------------------------------------------------------------------------------------
+    // [Tools]
+    // ----------------------------------------------------------------------------------------------------
+    
+    private static function _parseTitle($html) {
+      $title_match = preg_match('/<title>(.*) \| Redtube/', $html, $match);
+      $title = preg_replace(
+        array('/\?/', '/ *\/ */', ),
+        array('？',   ' - ',      ),
+        $match[1]);
+      
+      $title = htmlspecialchars_decode(trim($title));
+      
+      $title = preg_replace(
+        array("/&/",   ),
+        array("[AND]", ),
+        $title);
+      
+      return $title;
+    }
+    
     
     
     // ----------------------------------------------------------------------------------------------------
@@ -325,13 +346,8 @@
       // ------------------------------
       
       // title
-      $title_match = preg_match('/<title>(.*) \| Redtube/', $html, $match);
-      $title = preg_replace(
-        array('/\?/', '/ *\/ */', ),
-        array('？',   ' - ',      ),
-        $match[1]);
-      $title = trim($title);
-      if (!$title_match || !$title) {
+      $title = self::_parseTitle($html);
+      if (!$title) {
         Console::out("[html] get title fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
         $this->setStatus('fail');
         return;
@@ -469,13 +485,8 @@
       // ------------------------------
       
       // title
-      $title_match = preg_match('/<title>(.*) \| Redtube/', $html, $match);
-      $title = preg_replace(
-        array('/\?/', '/ *\/ */', ),
-        array('？',   ' - ',      ),
-        $match[1]);
-      $title = trim($title);
-      if (!$title_match || !$title) {
+      $title = self::_parseTitle($html);
+      if (!$title) {
         Console::out("[html] get title fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
         return;
       }
