@@ -208,6 +208,15 @@
       return $title;
     }
     
+    // ----------------------------------------------------------------------------------------------------
+    
+    private static function _parseMovie($html) {
+      // movie="$(grep '<source ' "${html}" | head -1 | sed 's/^.* src=.//g; s/. type.*$//g' | tee "tmp/${id}.url")"
+      $movie_match = preg_match('/<source .*src="([^"]*)"/m', $html, $match);
+      $movie = $match[1];
+      return $movie;
+    }
+    
     
     
     // ----------------------------------------------------------------------------------------------------
@@ -353,10 +362,9 @@
         return;
       }
       
-      // movie   movie="$(grep '<source ' "${html}" | head -1 | sed 's/^.* src=.//g; s/. type.*$//g' | tee "tmp/${id}.url")"
-      $movie_match = preg_match('/<source .*src="([^"]*)"/m', $html, $match);
-      $movie = $match[1];
-      if (!$movie_match || !$movie) {
+      // movie
+      $movie = self::_parseMovie($html);
+      if (!$movie) {
         Console::out("[html] get movie fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
         $this->setStatus('fail');
         return;
@@ -492,9 +500,8 @@
       }
       
       // movie
-      $movie_match = preg_match('/<source .*src="([^"]*)"/m', $html, $match);
-      $movie = $match[1];
-      if (!$movie_match || !$movie) {
+      $movie = self::_parseMovie($html);
+      if (!$movie) {
         Console::out("[html] get movie fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
         return;
       }
