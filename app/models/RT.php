@@ -217,6 +217,14 @@
       return $movie;
     }
     
+    // ----------------------------------------------------------------------------------------------------
+    
+    private static function _parseThumb($html) {
+      $thumb_match = preg_match('/poster="(\/\/.*.jpg)"/m', $html, $match);
+      $thumb = preg_replace("/(https?:)?\/\//", "http://", $match[1]);
+      return $thumb;
+    }
+    
     
     
     // ----------------------------------------------------------------------------------------------------
@@ -509,9 +517,8 @@
       $filename = "{$this->id}_{$title}.{$this->file_type}";
       
       // thumb
-      $thumb_match = preg_match('/poster="(\/\/.*.jpg)"/m', $html, $match);
-      $thumb = preg_replace("/(https?:)?\/\//", "http://", $match[1]);
-      if (!$thumb_match || !$thumb) {
+      $thumb = self::_parseThumb($html);
+      if (!$thumb) {
         Console::out("[html] get thumb fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
         return;
       }
