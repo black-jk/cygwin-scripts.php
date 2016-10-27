@@ -324,6 +324,7 @@
       // [Parse]
       // ------------------------------
       
+      // title
       $title_match = preg_match('/<title>(.*) \| Redtube/', $html, $match);
       $title = preg_replace(
         array('/\?/', '/ *\/ */', ),
@@ -336,7 +337,7 @@
         return;
       }
       
-      //movie="$(grep '<source ' "${html}" | head -1 | sed 's/^.* src=.//g; s/. type.*$//g' | tee "tmp/${id}.url")"
+      // movie   movie="$(grep '<source ' "${html}" | head -1 | sed 's/^.* src=.//g; s/. type.*$//g' | tee "tmp/${id}.url")"
       $movie_match = preg_match('/<source .*src="([^"]*)"/m', $html, $match);
       $movie = $match[1];
       if (!$movie_match || !$movie) {
@@ -467,7 +468,7 @@
       // [Parse]
       // ------------------------------
       
-      // [TODO] ...
+      // title
       $title_match = preg_match('/<title>(.*) \| Redtube/', $html, $match);
       $title = preg_replace(
         array('/\?/', '/ *\/ */', ),
@@ -479,6 +480,7 @@
         return;
       }
       
+      // movie
       $movie_match = preg_match('/<source .*src="([^"]*)"/m', $html, $match);
       $movie = $match[1];
       if (!$movie_match || !$movie) {
@@ -501,6 +503,8 @@
       );
       $dest = RT_TMP_ROOT . "thumbs/{$this->id}.jpg";
       Tool::getFile($thumb, $dest, $options);
+      
+      // ------------------------------
       
       Console::out("", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
       Console::out("[title]    {$title}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
