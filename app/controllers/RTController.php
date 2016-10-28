@@ -375,7 +375,10 @@
     
     public function help() {
       $msg =
-      "[Usage] ./rt-operation.php [loop] <action>  [-v] [-n] [-u]\n" .
+      "[Usage]\n" .
+      "  ./rt-operation.php [loop] <action>  [-v] [-n] [-u]\n" .
+      "  ./rt-operation.php [loop] preview [-thumb]\n" .
+      "  ./rt-operation.php [loop] reset [-renew]\n" .
       "\n" .
       "  -v  verbose          \n" .
       "  -n  dry run          \n" .
