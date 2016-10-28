@@ -54,6 +54,8 @@
         return;
       }
       
+      $thumb = ParamsParser::getParam('thumb', FALSE) ? TRUE : FALSE;
+      
       foreach ($lines as $line) {
         $id = preg_replace(array('/http.*\//', '/[^0-9].*$/'), '', $line);
         if ($id) {
@@ -96,7 +98,7 @@
             break;
             
           case 'preview':
-            $rt->preview();
+            $rt->preview($thumb);
             break;
             
           case 'info':

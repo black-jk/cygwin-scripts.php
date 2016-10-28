@@ -481,7 +481,7 @@
     
     // ----------------------------------------------------------------------------------------------------
     
-    public function preview() {
+    public function preview($getThumb) {
       $url = $this->getUrl();
       
       $options = array(
@@ -520,14 +520,17 @@
       $thumb = self::_parseThumb($html);
       if (!$thumb) {
         Console::out("[html] get thumb fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
-        return;
+        if ($getThumb) {
+          return;
+        }
       }
-      
-      $options = array(
-        'tmp_path' => RT_TMP_ROOT . "thumb_{$this->id}.jpg",
-      );
-      $dest = RT_TMP_ROOT . "thumbs/{$this->id}.jpg";
-      Tool::getFile($thumb, $dest, $options);
+      if ($getThumb) {
+        $options = array(
+          'tmp_path' => RT_TMP_ROOT . "thumb_{$this->id}.jpg",
+        );
+        $dest =  RT_TMP_ROOT . "thumbs/{$this->id}.jpg";
+        Tool::getFile($thumb, $dest, $options);
+      }
       
       // ------------------------------
       
