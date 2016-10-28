@@ -28,7 +28,7 @@ _rop()
       return 0
     ;;
     
-    info|update|add|retry|bad|repeat|privat|reset|edit|preview)
+    info|update|add|retry|bad|repeat|privat|reset|edit)
       return 0
     ;;
     
@@ -38,6 +38,10 @@ _rop()
     
     state)
       COMPREPLY=( $( compgen -W "todo doing success fail bad repeat private" -- "$cur" ) )
+    ;;
+    
+    preview)
+      COMPREPLY=( $( compgen -W "-thumb" -- "$cur" ) )
     ;;
     
     *)
