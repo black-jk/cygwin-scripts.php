@@ -55,6 +55,7 @@
       }
       
       $thumb = ParamsParser::getParam('thumb', FALSE) ? TRUE : FALSE;
+      $renew = ParamsParser::getParam('renew', FALSE) ? TRUE : FALSE;
       
       foreach ($lines as $line) {
         $id = preg_replace(array('/http.*\//', '/[^0-9].*$/'), '', $line);
@@ -88,6 +89,9 @@
           case 'reset':
             if (!$is_new) {
               $rt->destroy();
+            }
+            if ($renew) {
+              $this->_batchAction('add', $id);
             }
             break;
             

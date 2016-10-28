@@ -28,7 +28,7 @@ _rop()
       return 0
     ;;
     
-    info|update|add|retry|bad|repeat|privat|reset|edit)
+    info|update|add|retry|bad|repeat|privat|edit)
       return 0
     ;;
     
@@ -42,6 +42,10 @@ _rop()
     
     preview)
       COMPREPLY=( $( compgen -W "-thumb" -- "$cur" ) )
+    ;;
+    
+    reset)
+      COMPREPLY=( $( compgen -W "-renew" -- "$cur" ) )
     ;;
     
     *)
