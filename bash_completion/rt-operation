@@ -1,29 +1,54 @@
 # bash completion for rt-operation.php
 # alias: rop
 
-_rop()
-{
+_in_array() {
+  local haystack=${1}[@]
+  local needle=${2}
+  for i in ${!haystack}; do
+    if [[ ${i} == ${needle} ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+_rop() {
   local cur prev xspec helpopts
   
   COMPREPLY=()
   _get_comp_words_by_ref cur prev
   
+  cmd=${COMP_WORDS[0]}
+  act1=${COMP_WORDS[1]}
+  act2=${COMP_WORDS[2]}
+  
+  inloop=""
+  if [ "${act1}" == "loop" ]; then
+    inloop="1"
+  fi
+  
+  if [ ${prev} == "rop" ] || [ ${prev} == "loop" ]; then
+    key="rop"
+  elif [ "${act1}" == "loop" ]; then
+    key=${act2}
+  else
+    key=${act1}
+  fi
+  
+  #echo ""
+  #echo "  cmd:      ${cmd}"
+  #echo "  act:      ${act}"
   #echo ""
   #echo "  cur:      ${cur}"
   #echo "  prev:     ${prev}"
   #echo "  xspec:    ${xspec}"
   #echo ""
+  #echo "   key:      ${key}"
+  #echo ""
   
-  case ${prev} in
-    
-    rop)
-      COMPREPLY=( $( compgen -W "help info update add retry bad repeat privat reset edit preview category state run --limit" -- "$cur" ) )
-    ;;
-    
-    run)
-      COMPREPLY=( $( compgen -W "--limit" -- "$cur" ) )
-    ;;
-    
+  word=""
+  
+  case ${key} in
     help)
       return 0
     ;;
@@ -32,20 +57,33 @@ _rop()
       return 0
     ;;
     
+    rop)
+      if [ ${inloop} ]; then
+        word="info update add retry bad repeat privat reset edit preview"
+      else
+        word="help loop info update add retry bad repeat privat reset edit preview category state run"
+        _in_array COMP_WORDS "--limit" || word="${word} --limit"
+      fi
+    ;;
+    
+    run)
+      _in_array COMP_WORDS "--limit" || word="${word} --limit"
+    ;;
+    
     category)
-    	COMPREPLY=( $( compgen -W "info update add retry preview" -- "$cur" ) )
+      word="info update add retry preview"
     ;;
     
     state)
-      COMPREPLY=( $( compgen -W "todo doing success fail bad repeat private" -- "$cur" ) )
+      word="todo doing success fail bad repeat private"
     ;;
     
     preview)
-      COMPREPLY=( $( compgen -W "-thumb" -- "$cur" ) )
+      _in_array COMP_WORDS "-thumb" || word="${word} -thumb"
     ;;
     
     reset)
-      COMPREPLY=( $( compgen -W "-renew" -- "$cur" ) )
+      _in_array COMP_WORDS "-renew" || word="${word} -renew"
     ;;
     
     *)
@@ -53,6 +91,8 @@ _rop()
     ;;
     
   esac
+  
+  COMPREPLY=( $( compgen -W "${word}" -- "$cur" ) )
   
 } &&
 complete -F _rop rop
