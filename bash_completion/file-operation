@@ -24,7 +24,7 @@ _fop()
   case ${prev} in
     
     fop)
-      COMPREPLY=( $( compgen -W "show hide info help" -- "$cur" ) )
+      COMPREPLY=( $( compgen -W "show hide info clear help" -- "$cur" ) )
       return 0
     ;;
     
@@ -33,7 +33,7 @@ _fop()
   
   case ${act} in
     
-    show|hide)
+    show|hide|clear)
       
       case ${cur} in
         -*)

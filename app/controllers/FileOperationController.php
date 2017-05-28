@@ -46,6 +46,15 @@
     
     // --------------------------------------------------
     
+    public function clear() {
+      $dirs = $this->getDirs();
+      foreach ($dirs as $dir) {
+        $this->_clear($dir);
+      }
+    }
+    
+    // --------------------------------------------------
+    
     public function help() {
       require(VIEW_ROOT . "FileOperation/help.txt");
     }
@@ -108,7 +117,9 @@
       }
       
       if (!$dry_run) {
-        if (!$storage->save()) {
+        if ($storage->save()) {
+          $this->_clear($dir);
+        } else {
           Console::out("[WARN] save mapping fail!", $output_mode, array('bol' => "    "));
         }
       }
@@ -194,7 +205,19 @@
       Console::out("\n", OUTPUT_STDOUT);
     }
     
+    // ----------------------------------------------------------------------------------------------------
     
+    protected function _clear($dir) {
+      echo "  [CLEAR] {$dir}\n";
+      
+      $storage = new Storage("mapping", TRUE, $dir);
+      if (!empty($storage->data)) {
+        return;
+      }
+      
+      $storage->destroy();
+      Console::out("\n", OUTPUT_STDOUT);
+    }
     
     // ----------------------------------------------------------------------------------------------------
     
