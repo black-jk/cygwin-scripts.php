@@ -214,6 +214,7 @@
       // movie="$(grep '<source ' "${html}" | head -1 | sed 's/^.* src=.//g; s/. type.*$//g' | tee "tmp/${id}.url")"
       $movie_match = preg_match('/<source .*src="([^"]*)"/m', $html, $match);
       $movie = $match[1];
+      $movie = htmlspecialchars_decode($movie);
       return $movie;
     }
     
