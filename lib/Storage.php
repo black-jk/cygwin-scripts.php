@@ -80,6 +80,22 @@
       return file_put_contents($path, $serialized_data);
     }
     
+    // --------------------------------------------------
+    
+    public function destroy($force=FALSE) {
+      $path = $this->getFilePath();
+      if (!file_exists($path)) {
+        return;
+      }
+      if (!$force && !empty($this->data)) {
+        Logger::debug("[" . __CLASS__ . "] [{$this->name}] [clear] {$path} (data not empty. skip!)");
+        return;
+      }
+      
+      Logger::debug("[" . __CLASS__ . "] [{$this->name}] [clear] {$path} (removed)");
+      unlink($path);
+    }
+    
     
     
     // ----------------------------------------------------------------------------------------------------
