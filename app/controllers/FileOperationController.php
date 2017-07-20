@@ -195,11 +195,16 @@
     protected function _info($dir) {
       echo "  [INFO] {$dir}\n";
       
+      $verbose = ParamsParser::getParam('v', FALSE);
+      
       $storage = new Storage("mapping", TRUE, $dir);
       
       foreach ($storage->data as $orig_filename => $dest_filename) {
         $index = preg_replace('/\.contents$/', '', $orig_filename);
-        Console::out("{$index}: {$dest_filename}", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
+        if ($verbose) {
+          $size = " (" . trim(shell_exec("du -sh {$dir}/{$orig_filename} | awk '{print \$1}'")) . ")";
+        }
+        Console::out("{$index}: {$dest_filename}{$size}", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
       }
       
       Console::out("\n", OUTPUT_STDOUT);

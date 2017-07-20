@@ -48,7 +48,15 @@ _fop()
     ;;
     
     info)
-      COMPREPLY=( $( compgen -d -- "$cur" ) )
+    	case ${cur} in
+    		-*)
+    		  COMPREPLY=( $( compgen -W "-v" -- "$cur" ) )
+        ;;
+        
+        *)
+          COMPREPLY=( $( compgen -d -- "$cur" ) )
+        ;;
+      esac
       return 0
     ;;
     
