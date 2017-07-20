@@ -196,11 +196,15 @@
       echo "  [INFO] {$dir}\n";
       
       $verbose = ParamsParser::getParam('v', FALSE);
+      $pattern = ParamsParser::getParam('p', FALSE);
       
       $storage = new Storage("mapping", TRUE, $dir);
       
       foreach ($storage->data as $orig_filename => $dest_filename) {
         $index = preg_replace('/\.contents$/', '', $orig_filename);
+        if ($pattern && !preg_match("/{$pattern}/", $dest_filename)) {
+          continue;
+        }
         if ($verbose) {
           $size = " (" . trim(shell_exec("du -sh {$dir}/{$orig_filename} | awk '{print \$1}'")) . ")";
         }
