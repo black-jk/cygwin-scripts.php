@@ -12,8 +12,8 @@ _fop()
   #helpopts=`_parse_help ${COMP_WORDS[0]}`
   
   cmd=${COMP_WORDS[0]}
-	act=${COMP_WORDS[1]}
-	
+  act=${COMP_WORDS[1]}
+  
   #echo ""
   #echo "  cur:      ${cur}"
   #echo "  prev:     ${prev}"
@@ -48,9 +48,9 @@ _fop()
     ;;
     
     info)
-    	case ${cur} in
-    		-*)
-    		  COMPREPLY=( $( compgen -W "-v" -- "$cur" ) )
+      case ${cur} in
+        -*)
+          COMPREPLY=( $( compgen -W "-v --p" -- "$cur" ) )
         ;;
         
         *)
