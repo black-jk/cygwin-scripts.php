@@ -245,7 +245,8 @@
         }
         $missing_html_count = 0;
         
-        $match = preg_match_all('/href="\/(\d+)".*class="video-thumb"/i', $html, $matches);
+        // $match = preg_match_all('/href="\/(\d+)".*class="video-thumb"/i', $html, $matches);
+        $match = preg_match_all('/<a class="video_link .* href="\/(\d+)"/i', $html, $matches); // <a class="video_link js_mpop js-pop" href="/1660509" >
         $ids_count = count($matches[1]);
         if (!$match || $ids_count == 0) {
           break;
@@ -399,7 +400,7 @@
       "    \n" .
       "    edit    <number>   \n" .
       "    \n" .
-      "    preview <number>   \n" .
+      "    preview <number> [-thumb]\n" .
       "    \n" .
       "    category <action> <url> [--limit <number>]  \n" .
       "      url:                                      \n" .
