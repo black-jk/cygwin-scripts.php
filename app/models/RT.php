@@ -14,7 +14,7 @@
   ### http://videotools.12pings.net/#!form/getvideo
   ### http://dreamway.blog.51cto.com/1281816/1151886
   */
-  define('RT_URL_FORMAT',    "http://www.redtube.com/%d");
+  define('RT_URL_FORMAT',    "https://www.redtube.com/%d");
   
   // ====================================================================================================
   
@@ -192,7 +192,7 @@
     // ----------------------------------------------------------------------------------------------------
     
     private static function _parseTitle($html) {
-      $title_match = preg_match('/<title>(.*) \| Redtube/', $html, $match);
+      $title_match = preg_match('/<title>(.*) (\||&#124;) Redtube/', $html, $match);
       $title = preg_replace(
         array('/\?/', '/ *\/ */', ),
         array('？',   ' - ',      ),
@@ -210,20 +210,42 @@
     
     // ----------------------------------------------------------------------------------------------------
     
-    private static function _parseMovie($html) {
-      // movie="$(grep '<source ' "${html}" | head -1 | sed 's/^.* src=.//g; s/. type.*$//g' | tee "tmp/${id}.url")"
-      $movie_match = preg_match('/<source .*src="([^"]*)"/m', $html, $match);
-      $movie = $match[1];
-      $movie = htmlspecialchars_decode($movie);
-      return $movie;
+    private static function _parseMovie($html, $id) {
+      // https://ev.rdtcdn.com/media/videos/201210/08/284173/480p_600k_284173.mp4?validfrom=1541520491&validto=1541527691&rate=65k&burst=2700k&hash=ugE%2FUJdR8Ai6uguYqFzRV%2FS2zqc%3D
+      preg_match('/playervars(.*)$/m', $html, $match);
+      $src = $match[1];
+      $src = preg_replace("/\\\\/m", "", $src);
+      $src = preg_replace("/http/m", "\nhttp", $src);
+      $src = preg_replace("/\".*\$/m", "", $src);
+      
+      preg_match('/^(https:.*videos.*\.mp4.*)$/m', $src, $match);
+      $src = $match[1];
+      
+      if (!$src) {
+        // <p class="unavailable_text">This video has been removed. Please enjoy one of our many other videos.</p>
+        preg_match('/<p.*"unavailable_text">(.*)<\/p>/', $html, $match);
+        $msg = $match[1];
+        if ($msg) {
+          throw new Exception("[" . __CLASS__ . "] {$msg}", 2);
+        }
+      }
+      return $src;
     }
     
     // ----------------------------------------------------------------------------------------------------
     
     private static function _parseThumb($html) {
-      $thumb_match = preg_match('/poster="(\/\/.*.jpg)"/m', $html, $match);
-      $thumb = preg_replace("/(https?:)?\/\//", "http://", $match[1]);
-      return $thumb;
+      // https://ei-ph.rdtcdn.com/videos/201809/03/181386321/original/(m=eaAaGwFb)(mh=M_Jyd1ki29GeL_Pc)0.jpg
+      // https://ci.rdtcdn.com/m=eaAaGwFb/media/videos/201709/28/2493022/original/15.jpg
+      preg_match('/playervars(.*)$/m', $html, $match);
+      $src = $match[1];
+      $src = preg_replace("/\\\\/m", "", $src);
+      $src = preg_replace("/http/m", "\nhttp", $src);
+      $src = preg_replace("/\".*\$/m", "", $src);
+      
+      preg_match('/^(https:.*videos.*original.*jpg.*)$/m', $src, $match);
+      $src = $match[1];
+      return $src;
     }
     
     
@@ -372,7 +394,7 @@
       }
       
       // movie
-      $movie = self::_parseMovie($html);
+      $movie = self::_parseMovie($html, $this->id);
       if (!$movie) {
         Console::out("[html] get movie fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('bol' => "\n      ", 'eol' => "\n"));
         $this->setStatus('fail');
@@ -396,7 +418,7 @@
         $_movie_path = preg_replace("/'/", "'\\''", $movie_path);
         $useg_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
         $cmd = "axel -q -v -n {$connections} -U '$useg_agent' -o '{$_movie_path}' '{$movie}'";
-        //$cmd = "wget --progress=bar -U '$useg_agent' -O '{$_movie_path}' '{$movie}'";
+        // $cmd = "wget --progress=bar -U '$useg_agent' -O '{$_movie_path}' '{$movie}'";
         Console::out("[DOWNLOAD] {$cmd}", OUTPUT_STDOUT | OUTPUT_LOG_INFO, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
         $result = system("{$cmd} | awk '{print \"            \" \$0}'");
         
@@ -504,14 +526,14 @@
       // title
       $title = self::_parseTitle($html);
       if (!$title) {
-        Console::out("[html] get title fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+        Console::out("[preview] GET TITLE FAIL!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
         return;
       }
       
       // movie
-      $movie = self::_parseMovie($html);
+      $movie = self::_parseMovie($html, $this->id);
       if (!$movie) {
-        Console::out("[html] get movie fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+        Console::out("[preview] GET MOVIE FAIL!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
         return;
       }
       
@@ -520,26 +542,28 @@
       // thumb
       $thumb = self::_parseThumb($html);
       if (!$thumb) {
-        Console::out("[html] get thumb fail!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+        Console::out("[preview] GET THUMB FAIL!", OUTPUT_STDOUT | OUTPUT_LOG_ERROR, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
         if ($getThumb) {
           return;
         }
       }
       if ($getThumb) {
+        exec("mkdir -p " . RT_TMP_ROOT . "thumbs/");
+        
         $options = array(
           'tmp_path' => RT_TMP_ROOT . "thumb_{$this->id}.jpg",
         );
-        $dest =  RT_TMP_ROOT . "thumbs/{$this->id}.jpg";
+        $dest = RT_TMP_ROOT . "thumbs/{$this->id}.jpg";
         Tool::getFile($thumb, $dest, $options);
       }
       
       // ------------------------------
       
       Console::out("", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
-      Console::out("[title]    {$title}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
-      Console::out("[thumb]    {$thumb}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+      Console::out("[title]    {$title}",    OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+      Console::out("[thumb]    {$thumb}",    OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
       Console::out("[filename] {$filename}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
-      Console::out("[source]   {$movie}", OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
+      Console::out("[source]   {$movie}",    OUTPUT_STDOUT, array('indent' => 6, 'bol' => "", 'eol' => "\n"));
     }
     
     

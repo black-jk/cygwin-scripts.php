@@ -36,7 +36,7 @@
     // ----------------------------------------------------------------------------------------------------
     
     public static function getHtml($url, $options = array()) {
-      Console::out("[OPERATION] getting html '{$url}' ... " . ($c > 1 ? "(retry: {$c})" : ""), OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 6, 'bol' => "\n", 'eol' => "\n"));
+      Console::out("[OPERATION] GETTING HTML '{$url}' ... " . ($c > 1 ? "(retry: {$c})" : ""), OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 6, 'bol' => "\n", 'eol' => "\n"));
       
       $cache_path = $options['cache_path']; // cache path of html
       $cache_time = $options['cache_time']; // cache time (minute)
@@ -78,7 +78,7 @@
           }
           
           $useg_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
-          //$cmd = "axel -q -n 1 -U '$useg_agent' -o '{$html_path}' '{$url}'";
+          // $cmd = "axel -q -n 1 -U '$useg_agent' -o '{$html_path}' '{$url}'";
           $cmd = "wget --progress=bar -U '$useg_agent' -O '{$html_path}' '{$url}'";
           Console::out("[cmd] {$cmd}", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
           $result = system("{$cmd} | awk '{print \"        \" \$0}'");
@@ -161,7 +161,7 @@
           
           $useg_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
           $cmd = "axel -q -n 1 -U '$useg_agent' -o '{$file_path}' '{$url}'";
-          //$cmd = "wget --progress=bar -U '$useg_agent' -O '{$file_path}' '{$url}'";
+          // $cmd = "wget --progress=bar -U '$useg_agent' -O '{$file_path}' '{$url}'";
           Console::out("[cmd] {$cmd}", OUTPUT_STDOUT | OUTPUT_LOG_DEBUG, array('indent' => 8, 'bol' => "", 'eol' => "\n"));
           $result = system("{$cmd} | awk '{print \"        \" \$0}'");
           

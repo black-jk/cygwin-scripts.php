@@ -27,13 +27,12 @@
         $application->begin();
         $application->execute($actionName);
         $application->done();
-        
       } catch (Exception $e) {
         $error_message = "[ERROR] {$e->getMessage()}";
         Logger::error($error_message);
         echo "  {$error_message}\n\n";
         
-        if ($application) {
+        if ($application && $e->getCode() == 0) {
           $application->execute('help');
         }
       }
