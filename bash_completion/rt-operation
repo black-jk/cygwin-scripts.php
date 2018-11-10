@@ -53,15 +53,15 @@ _rop() {
       return 0
     ;;
     
-    info|update|add|retry|bad|repeat|privat|edit)
+    info|update|add|retry|bad|normal|repeat|privat|edit)
       return 0
     ;;
     
     rop)
       if [ ${inloop} ]; then
-        word="info update add retry bad repeat privat reset edit preview"
+        word="info update add retry bad normal repeat privat reset edit preview"
       else
-        word="help loop info update add retry bad repeat privat reset edit preview category state run"
+        word="help loop info update add retry bad normal repeat privat reset edit preview category state run"
         _in_array COMP_WORDS "--limit" || word="${word} --limit"
       fi
     ;;
@@ -75,7 +75,7 @@ _rop() {
     ;;
     
     state)
-      word="todo doing success fail bad repeat private"
+      word="todo doing success fail bad normal repeat private"
     ;;
     
     preview)

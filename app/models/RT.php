@@ -255,10 +255,10 @@
     public function setStatus($status) {
       $origin_status = $this->status;
       
-      // status: new todo doing success fail bad repeat private
+      // status: new todo doing success fail private repeat bad normal
       switch ($status) {
         case 'todo':
-          if (in_array($this->status, array('repeat', 'bad'))) {
+          if (in_array($this->status, array('private', 'repeat', 'bad', 'normal'))) {
             Console::out("[RT #{$this->id}] [setStatus({$status})] [SKIP] '{$this->status}'", OUTPUT_STDOUT, array('bol' => "    ", 'eol' => "\n"));
             return;
           }
@@ -292,6 +292,7 @@
           break;
           
         case 'bad':
+        case 'normal':
         case 'repeat':
         case 'private':
           $this->remove();
@@ -323,7 +324,9 @@
           break;
           
         case 'bad':
+        case 'normal':
         case 'repeat':
+        case 'private':
           $this->remove();
           break;
           

@@ -80,6 +80,7 @@
             break;
             
           case 'bad':
+          case 'normal':
           case 'retry':
           case 'repeat':
           case 'private':
@@ -155,6 +156,11 @@
     public function bad() {
       $src = $this->getSrc();
       $this->_batchAction('bad', $src);
+    }
+    
+    public function normal() {
+      $src = $this->getSrc();
+      $this->_batchAction('normal', $src);
     }
     
     public function repeat() {
@@ -327,7 +333,7 @@
     
     public function loop() {
       $action = ParamsParser::getOption(1);
-      if (!in_array($action, array('info', 'update', 'add', 'retry', 'bad', 'repeat', 'private', 'reset'))) {
+      if (!in_array($action, array('info', 'update', 'add', 'retry', 'bad', 'normal', 'repeat', 'private', 'reset'))) {
         $this->help();
         return;
       }
@@ -394,6 +400,7 @@
       "    add     <number>   \n" .
       "    retry   <number>   \n" .
       "    bad     <number>   \n" .
+      "    normal  <number>   \n" .
       "    repeat  <number>   \n" .
       "    privat  <number>   \n" .
       "    reset   <number>   \n" .
